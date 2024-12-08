@@ -10,38 +10,39 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.health.Repository.DoctorRepository;
+import com.health.Repository.HospitalRepository;
 import com.health.Repository.UserRepository;
 import com.health.custom_exception.ResourceNotFoundException;
 import com.health.entity.Doctor;
+import com.health.entity.Hospital;
 import com.health.entity.User;
 import com.health.entity.UserRole;
 import com.health.reqdto.DoctorReqDto;
 import com.health.resdto.ApiResponse;
 import com.health.resdto.DoctorResDto;
 import com.health.service.DoctorService;
+import com.health.service.HospitalService;
 
 @Service
 @Transactional
 public class DoctorServiceImpl implements DoctorService {
 	
 	@Autowired
-	public DoctorRepository doctorRepository;
+	private DoctorRepository doctorRepository;
 	
 	@Autowired
-	public UserRepository  userRepository;
+	private UserRepository  userRepository;
 	
 	@Autowired
-	public ModelMapper mapper;
-
-
+	private ModelMapper mapper;
 
 	@Override
 	public List<DoctorResDto> getDoctorsByHospital(Long hospId) {
-		//String jpql = "select d from Doctor join d.hospitals h where h.id=:hospitalId ";
-		Optional<Doctor> doctors = doctorRepository.findById(hospId);
-		
-		return doctors.stream().map((d)->mapper.map(d,DoctorResDto.class)).collect(Collectors.toList());
-		
+		return doctorRepository
+				.findDoctorsByHospitalId(hospId)
+				.stream()
+				.map((d)->mapper.map(d,DoctorResDto.class))
+				.collect(Collectors.toList());
 	}
 
 	@Override

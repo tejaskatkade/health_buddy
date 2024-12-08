@@ -45,7 +45,6 @@ public class GlobalExceptionHandler {
 	// handle any other remaining exc => catch all
 
 	@ExceptionHandler(RuntimeException.class)
-
 	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
 	public ApiResponse handleAnyException(RuntimeException e) {
 		System.out.println("in catch-all " + e);

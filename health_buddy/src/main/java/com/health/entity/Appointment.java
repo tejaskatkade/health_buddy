@@ -2,6 +2,7 @@ package com.health.entity;
 
 import java.time.LocalDate;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -23,6 +24,7 @@ public class Appointment extends BaseEntity{
 	private LocalDate appointmentDate;
 	
 	@Enumerated(EnumType.STRING)
+	@Column(length = 50)
 	private AppointmentStatus status;
 	
 	@ManyToOne

@@ -1,19 +1,17 @@
 package com.health.reqdto;
 
-import java.time.LocalDate;
-
-import com.health.entity.TimeSlot;
-
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class AppointmentReqDto {
-	private LocalDate appointementDate;
+	private String appointmentDate;
 	//private AppointmentStatus status;
 	private Long doctor_id;
 	private Long hospital_id;
-	private TimeSlot timeSlot;
+	private String timeSlot;
 	private Long patient_id;
 }

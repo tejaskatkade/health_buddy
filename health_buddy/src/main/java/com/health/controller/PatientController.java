@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.health.reqdto.PatientReqDto;
 import com.health.resdto.ApiResponse;
@@ -19,9 +20,9 @@ import com.health.service.PatientService;
 import jakarta.validation.Valid;
 
 @CrossOrigin
-@Controller
 @Validated
 @RequestMapping("/patient")
+@RestController
 public class PatientController {
 	
 	@Autowired
