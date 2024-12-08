@@ -20,4 +20,6 @@ public interface AppointmentService {
 
 	String completeAppointment(Long appointId);
 
+	List<AppointmentResDto> getAppointmentsBypatientId(Long patientId);
+
 }

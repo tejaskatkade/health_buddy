@@ -26,6 +26,7 @@ import com.health.entity.Patient;
 import com.health.entity.TimeSlot;
 import com.health.reqdto.AppointmentReqDto;
 import com.health.resdto.AppointmentResDto;
+import com.health.resdto.PatientResDto;
 import com.health.service.AppointmentService;
 import com.health.service.TimeSlotService;
 
@@ -119,6 +120,24 @@ public class AppointmentServiceImpl implements AppointmentService {
 		}).collect(Collectors.toList());
 	}
 
+	@Override
+	public List<AppointmentResDto> getAppointmentsBypatientId(Long patientId) {
+		Patient patient = patientRepository.findById(patientId)
+		.orElseThrow(()->new ResourceNotFoundException("Patient",patientId));
+		
+		return appointmentRepo.findByPatient(patient).stream().map((a) -> {
+			
+			AppointmentResDto resDto = mapper.map(a, AppointmentResDto.class);
+			
+			resDto.setDoctorName(a.getDoctor().getName());
+			resDto.setHospitalName(a.getHospital().getName());
+			resDto.setPatientName(a.getPatient().getFirstName() + " " + a.getPatient().getLastName());
+			resDto.setStartTime(a.getTimeSlot().getStartTime());
+			
+			return resDto;
+		}).collect(Collectors.toList());
+
+	}
 
 	@Override
 	public List<AppointmentResDto> getAppointmentsByHospitalId(Long hospId) {

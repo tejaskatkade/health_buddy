@@ -14,6 +14,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class AppointmentResDto {
+	private Long id;
 	private LocalDate appointmentDate;
 	private AppointmentStatus status;
 	private String doctorName;

@@ -13,5 +13,7 @@ public interface DoctorService {
 	List<DoctorResDto> getDoctorsByHospital(Long hospId);
 
 	DoctorResDto getDoctorById(Long doctorID);
+
+	List<DoctorResDto> getAllDoctors();
 	
 }

@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import com.health.entity.Appointment;
 import com.health.entity.Doctor;
 import com.health.entity.Hospital;
+import com.health.entity.Patient;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
 
@@ -19,4 +20,5 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     List<Appointment> findByDoctor(Doctor doctor);
     List<Appointment> findByHospital(Hospital hospital);
+    List<Appointment> findByPatient(Patient patient);
 }

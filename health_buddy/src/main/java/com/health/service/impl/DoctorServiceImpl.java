@@ -63,5 +63,12 @@ public class DoctorServiceImpl implements DoctorService {
 		return mapper.map(doctor, DoctorResDto.class);
 	}
 
-	
+	@Override
+	public List<DoctorResDto> getAllDoctors() {
+		return doctorRepository
+				.findAll()
+				.stream()
+				.map((d)->mapper.map(d,DoctorResDto.class))
+				.collect(Collectors.toList());
+	}	
 }
