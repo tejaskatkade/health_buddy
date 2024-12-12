@@ -13,4 +13,8 @@ public interface PatientService {
 
 	String addPatient(PatientReqDto patientDto);
 
+	String inActivatePatient(Long patientId);
+
+	String activatePatient(Long patientId);
+
 }

@@ -1,7 +1,7 @@
 package com.health.reqdto;
 
-import org.hibernate.validator.constraints.UniqueElements;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,6 +13,6 @@ public class HospitalReqDto {
 	@NotNull
 	private String location;
 	@NotNull
-	@UniqueElements
+	@Email
 	private String contact;
 }

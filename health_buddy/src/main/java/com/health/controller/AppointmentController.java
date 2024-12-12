@@ -35,7 +35,7 @@ public class AppointmentController {
 		return ResponseEntity.status(HttpStatus.OK).body(appointmentService.getAllAppointments());	
 	}
 
-	@GetMapping("/{id}")
+	@GetMapping("/{id}") 
 	ResponseEntity<?> getAppointment(@PathVariable Long id){
 		return ResponseEntity.status(HttpStatus.OK).body(appointmentService.getAppointment(id));	
 	}

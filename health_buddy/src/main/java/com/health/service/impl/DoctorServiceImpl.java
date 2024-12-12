@@ -41,6 +41,7 @@ public class DoctorServiceImpl implements DoctorService {
 		return doctorRepository
 				.findDoctorsByHospitalId(hospId)
 				.stream()
+				.filter((doc)->doc.getUser().getIsActive() == true)
 				.map((d)->mapper.map(d,DoctorResDto.class))
 				.collect(Collectors.toList());
 	}
@@ -70,5 +71,49 @@ public class DoctorServiceImpl implements DoctorService {
 				.stream()
 				.map((d)->mapper.map(d,DoctorResDto.class))
 				.collect(Collectors.toList());
+	}
+	@Override
+	public List<DoctorResDto> getAllActiveDoctors() {
+		return doctorRepository
+				.findAll()
+				.stream().filter((doc)->doc.getUser().getIsActive() == true)
+				.map((d)->mapper.map(d,DoctorResDto.class))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public ApiResponse updateDoctor(Long doctorId, DoctorReqDto doctorReqDto) {
+		
+		Doctor doctor = doctorRepository
+				.findById(doctorId)
+				.orElseThrow(()-> new ResourceNotFoundException("Doctor", doctorId));
+		
+
+		doctor.setEmail(doctorReqDto.getEmail());
+		doctor.setName(doctorReqDto.getName());
+		doctor.setExperience(doctorReqDto.getExperience());
+		doctor.setContact(doctorReqDto.getContact());
+		doctor.setSpecialization(doctorReqDto.getSpecialization());
+		doctor.getUser().setPassword(doctorReqDto.getPassword());
+		doctorRepository.save(doctor);
+		return new ApiResponse("Doctore updated successfully");
+	}
+
+	@Override
+	public ApiResponse inActivateDoctor(Long doctorId) {
+		Doctor doctor = doctorRepository
+				.findById(doctorId)
+				.orElseThrow(()-> new ResourceNotFoundException("Doctor", doctorId));
+		doctor.getUser().setIsActive(false);
+		return new ApiResponse("Doctor is InActive now");
+	}
+
+	@Override
+	public ApiResponse activateDoctor(Long doctorId) {
+		Doctor doctor = doctorRepository
+				.findById(doctorId)
+				.orElseThrow(()-> new ResourceNotFoundException("Doctor", doctorId));
+		doctor.getUser().setIsActive(true);
+		return new ApiResponse("Doctor is Active now");
 	}	
 }

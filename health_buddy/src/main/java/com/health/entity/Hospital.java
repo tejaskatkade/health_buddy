@@ -21,6 +21,7 @@ public class Hospital extends BaseEntity  {
 	private String name;
 	private String location;
 	private String contact;
+	private Boolean isActive = true;
 	
 	@ManyToMany
 	private Set<Doctor> doctor;

@@ -16,4 +16,13 @@ public interface HospitalService {
 
 	String addDoctor(Long hospId, Long doctorId);
 
+	String activateHospital(Long hospId);
+	String inActivateHospital(Long hospId);
+
+	String removeDoctor(Long hospId, Long doctorId);
+
+	List<HospitalResDto> getActiveHospitals();
+
+	ApiResponse updateHospital(Long hospId, @Valid HospitalReqDto hospitalReqDto);
+
 }

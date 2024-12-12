@@ -1,8 +1,6 @@
 package com.health.service.impl;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -19,8 +17,6 @@ import com.health.reqdto.HospitalReqDto;
 import com.health.resdto.ApiResponse;
 import com.health.resdto.HospitalResDto;
 import com.health.service.HospitalService;
-
-import jakarta.validation.Valid;
 
 @Service
 @Transactional
@@ -41,11 +37,33 @@ public class HospitalServiceImpl implements HospitalService {
 		return hospitals.stream().map((h)->modelMap.map(h,HospitalResDto.class)).collect(Collectors.toList());
 		
 	}
+	
+	@Override
+	public List<HospitalResDto> getActiveHospitals() {
+		return hospitalRepository.findAll()
+			.stream()
+			.filter((hosp)->hosp.getIsActive() == true)
+			.map((h)->modelMap.map(h,HospitalResDto.class))
+			.collect(Collectors.toList());
+	}
 
 	@Override
 	public ApiResponse addHospital(HospitalReqDto hospitalReqDto) {
 		Hospital save = hospitalRepository.save(modelMap.map(hospitalReqDto, Hospital.class));
 		return new ApiResponse("Hospital Added id ::" + save.getId());
+	}
+	
+	@Override
+	public ApiResponse updateHospital(Long hospId, HospitalReqDto hospitalReqDto) {
+		Hospital hospital = hospitalRepository.findById(hospId).orElseThrow(()->new ResourceNotFoundException("Hospital", hospId));
+		//Hospital hospital2 = modelMap.map(hospitalReqDto, Hospital.class);
+		//hospital.setId(hospId);
+		hospital.setName(hospitalReqDto.getName());
+		hospital.setLocation(hospitalReqDto.getLocation());
+		hospital.setContact(hospitalReqDto.getContact());	
+		
+		Hospital save = hospitalRepository.save(hospital);
+		return new ApiResponse("Hospital Updated id ::" + save.getId());
 	}
 
 	@Override
@@ -57,5 +75,38 @@ public class HospitalServiceImpl implements HospitalService {
 		//hospitalRepository.save(hospital);
 		return "Doctor added";
 	}
+	@Override
+	public String removeDoctor(Long hospId, Long doctorId) {
+		Hospital hospital = hospitalRepository.findById(hospId).orElseThrow(()->new ResourceNotFoundException("Hospital", hospId));
+		Doctor doctor = doctorRepository.findById(doctorId).orElseThrow(()->new ResourceNotFoundException("Doctor", doctorId));
+		//hospital.getDoctor().add(doctor);
+		if(hospital.getDoctor().remove(doctor)) {
+			return "Doctor removed";
+		}
+		return "Doctor not available in hospital to remove";
+	}
+
+	@Override
+	public String activateHospital(Long hospId) {
+		hospitalRepository
+			.findById(hospId)
+			.orElseThrow(()->new ResourceNotFoundException("Hospital", hospId))
+			.setIsActive(true);
+		
+		return "Hospital is active";
+	}
+	@Override
+	public String inActivateHospital(Long hospId) {
+		hospitalRepository
+		.findById(hospId)
+		.orElseThrow(()->new ResourceNotFoundException("Hospital", hospId))
+		.setIsActive(false);
+		
+		return "Hospital is InActive";
+	}
+
+	
+
+	
 
 }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,6 +44,19 @@ public class PatientController {
 		return ResponseEntity
 				.status(HttpStatus.CREATED)
 				.body(new ApiResponse(patientService.addPatient(patientDto)));
+	}
+	
+	@PatchMapping("/inactivate/{patientId}")
+	public ResponseEntity<?> inActivatePatient(@PathVariable Long patientId) {
+		return ResponseEntity
+				.status(HttpStatus.CREATED)
+				.body(new ApiResponse(patientService.inActivatePatient(patientId)));
+	}
+	@PatchMapping("/activate/{patientId}")
+	public ResponseEntity<?> activatePatient(@PathVariable Long patientId) {
+		return ResponseEntity
+				.status(HttpStatus.CREATED)
+				.body(new ApiResponse(patientService.activatePatient(patientId)));
 	}
 	
 }

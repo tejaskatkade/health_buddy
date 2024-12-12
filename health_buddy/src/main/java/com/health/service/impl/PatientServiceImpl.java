@@ -60,5 +60,19 @@ public class PatientServiceImpl implements PatientService {
 		Patient patient2 = patientRepository.save(patient);	
 		return "Patient Added Successfully.  Patient Id : "+ patient2.getId();
 	}
+
+	@Override
+	public String inActivatePatient(Long patientId) {
+		patientRepository.findById(patientId)
+		.orElseThrow(()->new ResourceNotFoundException("Patient",patientId)).getUser().setIsActive(false);
+		return "Patient is Inactive";
+	}
+
+	@Override
+	public String activatePatient(Long patientId) {
+		patientRepository.findById(patientId)
+		.orElseThrow(()->new ResourceNotFoundException("Patient",patientId)).getUser().setIsActive(true);
+		return "Patient is active";
+	}
 	
 }
