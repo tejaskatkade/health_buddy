@@ -5,11 +5,13 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.health.Repository.PatientRepository;
 import com.health.Repository.UserRepository;
+import com.health.custom_exception.ApiException;
 import com.health.custom_exception.ResourceNotFoundException;
 import com.health.entity.Patient;
 import com.health.entity.User;
@@ -32,6 +34,9 @@ public class PatientServiceImpl implements PatientService {
 	@Autowired
 	private ModelMapper mapper;
 	
+	@Autowired
+	private PasswordEncoder encoder;
+	
 	@Override
 	public List<PatientResDto> getAllPatients() {
 		return patientRepository.findAll()
@@ -52,7 +57,11 @@ public class PatientServiceImpl implements PatientService {
 		
 		Patient patient = mapper.map(patientDto, Patient.class);
 		
-		User user = new User(patient.getEmail(),patientDto.getPassword(),UserRole.ROLE_PATIENT, true);
+		User user = new User(patient.getEmail(),encoder.encode(patientDto.getPassword()),UserRole.ROLE_PATIENT, true);
+		
+		if(userRepository.existsByUserName(patient.getEmail())) {
+			throw new ApiException("Email already exist");
+		}
 		userRepository.save(user);
 		
 		patient.setUser(user);

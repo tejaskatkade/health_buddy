@@ -40,7 +40,7 @@ public class Doctor extends BaseEntity {
 	
 	
 	@OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
-	private List<Appointment> appointments;
+	private Set<Appointment> appointments;
 	
 	@OneToOne
 	@JoinColumn(name = "user_id", nullable = false)

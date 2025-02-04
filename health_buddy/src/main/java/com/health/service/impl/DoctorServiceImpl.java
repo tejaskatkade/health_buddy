@@ -6,12 +6,14 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.health.Repository.DoctorRepository;
 import com.health.Repository.HospitalRepository;
 import com.health.Repository.UserRepository;
+import com.health.custom_exception.ApiException;
 import com.health.custom_exception.ResourceNotFoundException;
 import com.health.entity.Doctor;
 import com.health.entity.Hospital;
@@ -35,6 +37,9 @@ public class DoctorServiceImpl implements DoctorService {
 	
 	@Autowired
 	private ModelMapper mapper;
+	
+	@Autowired
+	private PasswordEncoder encoder;
 
 	@Override
 	public List<DoctorResDto> getDoctorsByHospital(Long hospId) {
@@ -49,7 +54,11 @@ public class DoctorServiceImpl implements DoctorService {
 	@Override
 	public ApiResponse addDoctor(DoctorReqDto doctorReqDto) {
 		Doctor doctor = mapper.map(doctorReqDto, Doctor.class);
-		User user = new User(doctor.getEmail(), doctorReqDto.getPassword(), UserRole.ROLE_DOCTOR, true);
+		User user = new User(doctor.getEmail(), encoder.encode(doctorReqDto.getPassword()), UserRole.ROLE_DOCTOR, true);
+		
+		if(userRepository.existsByUserName(doctor.getEmail())) {
+			throw new ApiException("Email already exist");
+		}
 		userRepository.save(user);
 		doctor.setUser(user);
 		Long id = doctorRepository.save(doctor).getId();

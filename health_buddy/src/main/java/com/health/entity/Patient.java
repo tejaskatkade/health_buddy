@@ -34,6 +34,8 @@ public class Patient extends BaseEntity{
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 	
+	/* mappedBy = "patient" indicate "patient" field in the Appointment entity owns the relationship.
+	 * the side containing physical mapping of the association : FK*/
 	@OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
 	private List<Appointment> appointments;
 }
