@@ -2,6 +2,7 @@ package com.health.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,9 +21,11 @@ import com.health.Repository.UserRepository;
 import com.health.custom_exception.ResourceNotFoundException;
 import com.health.entity.User;
 import com.health.entity.UserRole;
+import com.health.reqdto.MailVerificationReqDto;
 import com.health.reqdto.SigninReqDto;
 import com.health.resdto.SigninResDto;
 import com.health.security.JwtUtils;
+import com.health.service.impl.EmailService;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -48,6 +51,9 @@ public class UserController {
 
 	@Autowired
 	private AuthenticationManager authMgr;
+	
+	@Autowired
+	private EmailService emailService;
 
 
 	/*
@@ -84,6 +90,23 @@ public class UserController {
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(resp);
 	}
-
-
+	
+	@PostMapping("/sendotp")
+	public ResponseEntity<?> sendOTP(@RequestBody @Valid MailVerificationReqDto dto) {
+		
+		String result =  emailService.sendVerificationMail(dto.getEmail());
+		if(result.contains("failed")) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(result);
+	}
+	
+	@PostMapping("/verifyotp")
+	public ResponseEntity<?> verifyOTP(@RequestBody @Valid MailVerificationReqDto dto) {
+		boolean val = emailService.verifyOTP(dto.getEmail(), dto.getOtp());
+		if(val) {
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(val);
+		}
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(val);
+	}
 }

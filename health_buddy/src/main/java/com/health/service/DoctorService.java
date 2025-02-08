@@ -6,8 +6,6 @@ import com.health.reqdto.DoctorReqDto;
 import com.health.resdto.ApiResponse;
 import com.health.resdto.DoctorResDto;
 
-import jakarta.validation.Valid;
-
 public interface DoctorService {
 
 	ApiResponse addDoctor(DoctorReqDto doctorReqDto);

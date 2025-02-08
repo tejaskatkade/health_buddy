@@ -32,7 +32,7 @@ public class SecurityConfig {
 		http.csrf(customizer -> customizer.disable())
 				.authorizeHttpRequests(request -> request
 						.requestMatchers("/hospital/active","/doctor/**","/time_slots/available/**","/appointment/**",
-								"/patient", "/users/signin", "/v*/api-doc*/**",
+								"/patient", "/users/signin", "/v*/api-doc*/**","/users/sendotp","/users/verifyotp",
 								"/swagger-ui/**")
 						.permitAll()
 						.requestMatchers(HttpMethod.OPTIONS).permitAll()

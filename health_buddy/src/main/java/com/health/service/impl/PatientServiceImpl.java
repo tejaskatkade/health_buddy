@@ -37,6 +37,7 @@ public class PatientServiceImpl implements PatientService {
 	@Autowired
 	private PasswordEncoder encoder;
 	
+	
 	@Override
 	public List<PatientResDto> getAllPatients() {
 		return patientRepository.findAll()
@@ -56,7 +57,6 @@ public class PatientServiceImpl implements PatientService {
 	public String addPatient(PatientReqDto patientDto) {
 		
 		Patient patient = mapper.map(patientDto, Patient.class);
-		
 		User user = new User(patient.getEmail(),encoder.encode(patientDto.getPassword()),UserRole.ROLE_PATIENT, true);
 		
 		if(userRepository.existsByUserName(patient.getEmail())) {
@@ -65,11 +65,12 @@ public class PatientServiceImpl implements PatientService {
 		userRepository.save(user);
 		
 		patient.setUser(user);
-		
 		Patient patient2 = patientRepository.save(patient);	
 		return "Patient Added Successfully.  Patient Id : "+ patient2.getId();
 	}
-
+	
+	
+	
 	@Override
 	public String inActivatePatient(Long patientId) {
 		patientRepository.findById(patientId)
