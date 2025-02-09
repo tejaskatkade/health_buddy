@@ -17,7 +17,7 @@ public class SigninReqDto {
 	@Email(message = "Invalid email format")
 	private String email;
 	
-	@NotEmpty
+	@NotEmpty 
 	@Pattern(regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[#@$*]).{5,20}$", 
     message = "Password must be 5-20 characters long, contain at least one digit, one lowercase letter, one uppercase letter, and one special character (#@$*).")
 	@Length(message = "Invalid password length")

@@ -1,5 +1,7 @@
 package com.health.service.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,6 +36,9 @@ public class HospitalServiceImpl implements HospitalService {
 	@Override
 	public List<HospitalResDto> getAllHospitals() {
 		List<Hospital> hospitals = hospitalRepository.findAll();
+		for(Hospital h : hospitals) {
+			h.getIsActive();
+		}
 		return hospitals.stream().map((h)->modelMap.map(h,HospitalResDto.class)).collect(Collectors.toList());
 		
 	}
@@ -104,6 +109,25 @@ public class HospitalServiceImpl implements HospitalService {
 		
 		return "Hospital is InActive";
 	}
+
+	@Override
+	public List<HospitalResDto> getNoWorkingHospitalByDoctorId(Long doctorId) {
+	   
+	    List<Hospital> hospitalsWhereDoctorNotWorking = 
+	        hospitalRepository.findHospitalsWhereDoctorNotWorking(doctorId);
+
+	    
+	    if (hospitalsWhereDoctorNotWorking == null) {
+	        return Collections.emptyList();
+	    }
+
+	   
+	    return hospitalsWhereDoctorNotWorking.stream()
+	            .filter(h -> Boolean.TRUE.equals(h.getIsActive()))  // Prevents NullPointerException
+	            .map(hospital -> modelMap.map(hospital, HospitalResDto.class))
+	            .collect(Collectors.toList());
+	}
+
 
 	
 

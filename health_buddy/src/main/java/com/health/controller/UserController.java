@@ -2,7 +2,6 @@ package com.health.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,6 +20,7 @@ import com.health.Repository.UserRepository;
 import com.health.custom_exception.ResourceNotFoundException;
 import com.health.entity.User;
 import com.health.entity.UserRole;
+import com.health.reqdto.LogoutReqDto;
 import com.health.reqdto.MailVerificationReqDto;
 import com.health.reqdto.SigninReqDto;
 import com.health.resdto.SigninResDto;
@@ -83,9 +83,13 @@ public class UserController {
 				id=doctorRepository.findByEmail(user.getUserName()).getId();
 		}else if(user.getRole().equals(UserRole.ROLE_PATIENT)) {
 			id=patientRepository.findByEmail(user.getUserName()).getId();
-		}
+		}else if(user.getRole().equals(UserRole.ROLE_ADMIN)) {
+			id= user.getId();
+	}
 		SigninResDto resp = new SigninResDto
-				(jwtUtils.generateJwtToken(verifiedToken), "Successful Auth!!!!", id);
+				(jwtUtils.generateJwtToken(verifiedToken), "Successful Auth!!!!", id,user.getRole());
+		
+		
 		
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(resp);
@@ -109,4 +113,6 @@ public class UserController {
 		}
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(val);
 	}
+
+
 }

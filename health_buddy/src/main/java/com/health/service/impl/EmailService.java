@@ -23,7 +23,7 @@ public class EmailService {
 	//private UserRepository userRepository;
 	private Integer otpValue;
 	
-	private String sendEmail(String to, String subject, String body) {
+	public String sendEmail(String to, String subject, String body) {
 		try {
 			MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 			MimeMessageHelper helper = new MimeMessageHelper(mimeMessage,true);
@@ -41,7 +41,7 @@ public class EmailService {
 	
 	public String generateOTP() {
 		Random random = new Random();
-		int otpVal = 100000 + random.nextInt(999999);
+		int otpVal = 100000 + random.nextInt(900000);
 		return String.valueOf(otpVal);
 	}
 	

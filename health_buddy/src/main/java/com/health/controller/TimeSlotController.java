@@ -31,7 +31,7 @@ public class TimeSlotController {
        {
 
         LocalTime start = LocalTime.parse("10:00:00");
-        LocalTime end = LocalTime.parse("16:00:00");
+        LocalTime end = LocalTime.parse("20:00:00");
 
         List<LocalTime> availableSlots = timeSlotService.getAvailableTimeSlotsForDay(doctorId, date, start, end);
 

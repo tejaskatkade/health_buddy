@@ -25,4 +25,6 @@ public interface HospitalService {
 
 	ApiResponse updateHospital(Long hospId, @Valid HospitalReqDto hospitalReqDto);
 
+	List<HospitalResDto> getNoWorkingHospitalByDoctorId(Long doctorId);
+
 }

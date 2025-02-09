@@ -1,8 +1,12 @@
 package com.health.service.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import javax.print.Doc;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +26,7 @@ import com.health.entity.UserRole;
 import com.health.reqdto.DoctorReqDto;
 import com.health.resdto.ApiResponse;
 import com.health.resdto.DoctorResDto;
+import com.health.resdto.HospitalResDto;
 import com.health.service.DoctorService;
 import com.health.service.HospitalService;
 
@@ -67,6 +72,7 @@ public class DoctorServiceImpl implements DoctorService {
 
 	@Override
 	public DoctorResDto getDoctorById(Long doctorID) {
+		
 		Doctor doctor = doctorRepository
 				.findById(doctorID)
 				.orElseThrow(()-> new ResourceNotFoundException("Doctor", doctorID));
@@ -75,6 +81,10 @@ public class DoctorServiceImpl implements DoctorService {
 
 	@Override
 	public List<DoctorResDto> getAllDoctors() {
+		List<Doctor> all = doctorRepository.findAll();
+		for(Doctor d:all) {
+			d.getUser().getIsActive();
+		}
 		return doctorRepository
 				.findAll()
 				.stream()
@@ -98,12 +108,14 @@ public class DoctorServiceImpl implements DoctorService {
 				.orElseThrow(()-> new ResourceNotFoundException("Doctor", doctorId));
 		
 
+		doctor.getUser().setUserName(doctorReqDto.getEmail());
 		doctor.setEmail(doctorReqDto.getEmail());
 		doctor.setName(doctorReqDto.getName());
 		doctor.setExperience(doctorReqDto.getExperience());
 		doctor.setContact(doctorReqDto.getContact());
 		doctor.setSpecialization(doctorReqDto.getSpecialization());
 		doctor.getUser().setPassword(doctorReqDto.getPassword());
+		doctor.setContact(doctorReqDto.getContact());
 		doctorRepository.save(doctor);
 		return new ApiResponse("Doctore updated successfully");
 	}
@@ -124,5 +136,26 @@ public class DoctorServiceImpl implements DoctorService {
 				.orElseThrow(()-> new ResourceNotFoundException("Doctor", doctorId));
 		doctor.getUser().setIsActive(true);
 		return new ApiResponse("Doctor is Active now");
-	}	
+	}
+
+	@Override
+	public List<HospitalResDto> getHospitalByDoctorId(Long doctorId) {
+	    Doctor doctor = doctorRepository.findById(doctorId).orElseThrow(()-> new ResourceNotFoundException("Doctor", doctorId));
+	    
+	    
+	     
+	        
+	        // Get the list of hospitals associated with the doctor
+	    List<Hospital> hospitals = new ArrayList<>(doctor.getHospitals());
+	        
+	        // Convert the list of Hospital entities to HospitalResDto
+	        return hospitals.stream()
+	        		.filter((h)->h.getIsActive()==true)
+	                .map(hospital -> mapper.map(hospital, HospitalResDto.class))
+	                .collect(Collectors.toList());
+	}
+	
+	
+
+
 }

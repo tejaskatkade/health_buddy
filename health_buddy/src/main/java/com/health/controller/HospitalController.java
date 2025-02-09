@@ -1,5 +1,7 @@
 package com.health.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.health.reqdto.HospitalReqDto;
+import com.health.resdto.HospitalResDto;
 import com.health.service.HospitalService;
 
 import jakarta.validation.Valid;
@@ -68,4 +71,16 @@ public class HospitalController {
 	public ResponseEntity<?> inActivateHospital(@PathVariable Long hospId){
 		return ResponseEntity.status(HttpStatus.OK).body(hospitalService.inActivateHospital(hospId));
 	}
+	
+	@GetMapping("/{doctorId}")
+	public ResponseEntity<?> getNoWorkingHospitalByDoctorId(@PathVariable Long doctorId){
+		List<HospitalResDto> hospital = hospitalService.getNoWorkingHospitalByDoctorId(doctorId);
+        if (hospital != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(hospital);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+	}
+	
+	
 }

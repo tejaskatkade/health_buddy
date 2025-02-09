@@ -1,7 +1,10 @@
 package com.health.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -15,8 +18,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.health.entity.Hospital;
 import com.health.reqdto.DoctorReqDto;
 import com.health.resdto.ApiResponse;
+import com.health.resdto.HospitalResDto;
 import com.health.service.DoctorService;
 
 import jakarta.validation.Valid;
@@ -74,4 +79,15 @@ public class DoctorController {
 	}
 	
 
+	@GetMapping("/{doctorId}/hospital")
+    public ResponseEntity<?> getHospitalByDoctorId(@PathVariable Long doctorId) {
+        List<HospitalResDto> hospital = doctorService.getHospitalByDoctorId(doctorId);
+        if (hospital != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(hospital);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+	
+	
 }

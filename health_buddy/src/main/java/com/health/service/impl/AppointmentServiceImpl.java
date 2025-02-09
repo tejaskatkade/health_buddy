@@ -56,6 +56,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 
 	@Autowired
 	private AppointmentRepository appointmentRepository;
+	
+	@Autowired
+	private EmailService emailService;
 
 	@Override
 	public AppointmentResDto bookAppointment(AppointmentReqDto appointmentdto) {
@@ -102,6 +105,22 @@ public class AppointmentServiceImpl implements AppointmentService {
 		resDto.setHospitalName(appointment2.getHospital().getName());
 		resDto.setPatientName(appointment2.getPatient().getFirstName() + " " + appointment2.getPatient().getLastName());
 		resDto.setStartTime(appointment2.getTimeSlot().getStartTime());
+		
+		String subject = "Your Appointment has been booked successfully";
+		
+		String body = String.format(
+			    "Dear %s,\n\nYour appointment has been booked with Dr. %s.\n\n" +
+			    "Appointment Location: %s, %s\n" +
+			    "Appointment Time: %s",
+			    patient.getFirstName(),
+			    appointment2.getDoctor().getName(),
+			    appointment2.getHospital().getName(),
+			    appointment2.getHospital().getLocation(),
+			    appointment2.getTimeSlot().getStartTime()
+			);
+
+			emailService.sendEmail(patient.getEmail(), subject, body);
+
 		return resDto;
 	}
 
@@ -133,6 +152,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 			resDto.setHospitalName(a.getHospital().getName());
 			resDto.setPatientName(a.getPatient().getFirstName() + " " + a.getPatient().getLastName());
 			resDto.setStartTime(a.getTimeSlot().getStartTime());
+			
 			
 			return resDto;
 		}).collect(Collectors.toList());

@@ -14,4 +14,7 @@ public class PatientResDto {
 	private Integer age;
 	private Gender gender;
 	private String symptoms;
+	private String address;
+	private String email;
+	//private String contact;
 }

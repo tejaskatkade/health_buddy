@@ -3,6 +3,7 @@ package com.health.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
@@ -10,6 +11,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -38,13 +40,18 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.OPTIONS).permitAll()
 
 						.requestMatchers("/appointment/patient/*","/appointment/cancle/*","/appointment/*").hasRole("PATIENT")
-						.requestMatchers("/appointment/complete/*","/appointment/doctor/*","/appointment/cancel/*","/doctor","/doctor/*").hasRole("DOCTOR")
+						.requestMatchers("/appointment/complete/*","/appointment/doctor/*","/appointment/cancel/*","/doctor","/doctor/*","/hospital/*/doctor/*","/hospital/*").hasRole("DOCTOR")
 						//.requestMatchers("").hasRole("ADMIN")
 						.anyRequest()
 						.authenticated())
 	//			.httpBasic(Customizer.withDefaults()) replacing Basic Auth by custom JWT based auth
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+		/*
+		 * .logout() .logoutUrl("/users/logout") .addLogoutHandler(null)
+		 * .logoutSuccessHandler((request,response,auth)->SecurityContextHolder.
+		 * clearContext());
+		 */
 		return http.build();
 	}
 

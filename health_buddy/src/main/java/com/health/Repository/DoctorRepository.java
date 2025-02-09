@@ -16,4 +16,7 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
     Set<Doctor> findDoctorsByHospitalId(@Param("hospId") Long hosplId);
     
     Doctor findByEmail(String userName);
+    
+    //@Query("SELECT h.doctor FROM Hospital h where d.id !=:doctId")
+    
 }

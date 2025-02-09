@@ -3,7 +3,10 @@ package com.health.service;
 import java.util.List;
 
 import com.health.reqdto.PatientReqDto;
+import com.health.resdto.ApiResponse;
 import com.health.resdto.PatientResDto;
+
+import jakarta.validation.Valid;
 
 public interface PatientService {
 
@@ -16,5 +19,7 @@ public interface PatientService {
 	String inActivatePatient(Long patientId);
 
 	String activatePatient(Long patientId);
+
+	ApiResponse updatePatient(Long patientId, @Valid PatientReqDto req);
 
 }
