@@ -81,15 +81,19 @@ public class DoctorServiceImpl implements DoctorService {
 
 	@Override
 	public List<DoctorResDto> getAllDoctors() {
-		List<Doctor> all = doctorRepository.findAll();
-		for(Doctor d:all) {
-			d.getUser().getIsActive();
-		}
-		return doctorRepository
-				.findAll()
-				.stream()
-				.map((d)->mapper.map(d,DoctorResDto.class))
-				.collect(Collectors.toList());
+
+		
+	List<DoctorResDto> list = doctorRepository
+		        .findAll()
+		        .stream()
+		        .map(d -> {
+		            DoctorResDto dto = mapper.map(d, DoctorResDto.class);
+		            dto.setIsActive(d.getUser().getIsActive());
+		            return dto;
+		        })
+		        .collect(Collectors.toList());
+	return list;
+	 
 	}
 	@Override
 	public List<DoctorResDto> getAllActiveDoctors() {
@@ -98,6 +102,8 @@ public class DoctorServiceImpl implements DoctorService {
 				.stream().filter((doc)->doc.getUser().getIsActive() == true)
 				.map((d)->mapper.map(d,DoctorResDto.class))
 				.collect(Collectors.toList());
+		
+		
 	}
 
 	@Override

@@ -9,7 +9,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,11 +23,12 @@ import com.health.Repository.UserRepository;
 import com.health.custom_exception.ResourceNotFoundException;
 import com.health.entity.User;
 import com.health.entity.UserRole;
-import com.health.reqdto.LogoutReqDto;
 import com.health.reqdto.MailVerificationReqDto;
 import com.health.reqdto.SigninReqDto;
+import com.health.reqdto.UpdatePasswordReqDto;
 import com.health.resdto.SigninResDto;
 import com.health.security.JwtUtils;
+import com.health.service.UserService;
 import com.health.service.impl.EmailService;
 
 import jakarta.transaction.Transactional;
@@ -34,8 +38,6 @@ import jakarta.validation.Valid;
 @CrossOrigin
 @Validated
 @RequestMapping("/users")
-@Service
-@Transactional
 public class UserController {
 	@Autowired
 	private UserRepository userRepository;
@@ -54,6 +56,9 @@ public class UserController {
 	
 	@Autowired
 	private EmailService emailService;
+	
+	@Autowired
+	private UserService userService;
 
 
 	/*
@@ -95,6 +100,17 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(resp);
 	}
 	
+	@GetMapping("/verifyemail/{email}")
+	public ResponseEntity<?> verifyEmail(@PathVariable String email){
+		User user = userRepository.findByUserName(email).orElseThrow(()->new ResourceNotFoundException("User not found"));
+
+		if(user != null) {
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+		}
+		
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	}
+	
 	@PostMapping("/sendotp")
 	public ResponseEntity<?> sendOTP(@RequestBody @Valid MailVerificationReqDto dto) {
 		
@@ -112,6 +128,12 @@ public class UserController {
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body(val);
 		}
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(val);
+	}
+	
+	@PutMapping("/password")
+	public ResponseEntity<?> updatePassword(@RequestBody @Valid UpdatePasswordReqDto dto){
+		
+		return ResponseEntity.ok(userService.updateUserPassword(dto));
 	}
 
 

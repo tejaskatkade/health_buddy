@@ -15,8 +15,8 @@ import lombok.Setter;
 public class DoctorResDto {
 	private Long id;
 	private String name;
-	private User user;
-	//private Boolean isActive;
+	//private User user;
+	private Boolean isActive;
 	private String specialization;
 	private Integer experience;
 	private String email;
